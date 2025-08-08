@@ -1,0 +1,95 @@
+try: #If running in colab 
+    import google.colab
+    IN_COLAB = True 
+    %tensorflow_version 2.x
+except:
+    IN_COLAB = False
+import tensorflow as tf
+if (not tf.__version__.startswith('2')): #Checking if tf 2.0 is installed
+    print('Please install tensorflow 2.0 to run this notebook')
+print('Tensorflow version: ',tf.__version__, ' running in colab?: ', IN_COLAB)
+if IN_COLAB:
+    !pip install tensorflow_probability==0.8.0
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from tqdm import tqdm_notebook as tqdm
+import urllib.request
+from sklearn.model_selection import train_test_split
+import tensorflow_probability as tfp
+
+%matplotlib inline
+plt.style.use('default')
+
+print("TFP Version", tfp.__version__)
+print("TF  Version",tf.__version__)
+import pandas as pd
+import numpy as np
+import tensorflow as tf
+import keras
+from keras import backend as K
+from keras.layers import (Activation, AveragePooling1D, BatchNormalization,
+                          Conv1D, Dense, GlobalAveragePooling1D, Input)
+from keras.layers.core import Lambda
+from keras.models import Model
+from keras.optimizers import Nadam
+from keras.regularizers import l2
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from keras.utils import generic_utils
+from keras.utils import np_utils,plot_model
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
+from scipy import stats
+import numpy as np
+import pandas as pd
+import keras
+from keras.models import Sequential
+from keras.wrappers.scikit_learn import KerasClassifier
+from keras.utils import np_utils,plot_model
+from sklearn.model_selection import cross_val_score,train_test_split,KFold
+from sklearn.preprocessing import LabelEncoder
+from keras.layers import Dense,Dropout,Flatten,Conv1D,MaxPooling1D
+from keras.models import model_from_json
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import itertools
+import pymrmr 
+kernel_posterior_fn = tfp.layers.default_mean_field_normal_fn(
+      untransformed_scale_initializer=tf.compat.v1.initializers.random_normal(
+          mean=0,
+          stddev=1),)
+kernel_divergence_fn=lambda q, p, _: tfp.distributions.kl_divergence(q, p) / (x_train.shape[0] *1.0)
+
+model_vi = Sequential()
+model_vi.add(tfp.layers.Convolution1DFlipout(, kernel_size=,strides=,padding="same", activation = 'relu', kernel_divergence_fn=kernel_divergence_fn,input_shape=(16,1)))
+model_vi.add(tf.keras.layers.MaxPooling1D(pool_size=2,padding='SAME'))
+model_vi.add(tfp.layers.Convolution1DFlipout(, kernel_size=,strides=,padding="same", activation = 'relu', kernel_divergence_fn=kernel_divergence_fn))
+model_vi.add(tf.keras.layers.MaxPooling1D(pool_size=2,padding='SAME'))
+model_vi.add(tfp.layers.Convolution1DFlipout(, kernel_size=,strides=,padding="same", activation = 'relu', kernel_divergence_fn=kernel_divergence_fn))
+model_vi.add(tf.keras.layers.MaxPooling1D(pool_size=2,padding='SAME'))
+model_vi.add(tfp.layers.Convolution1DFlipout(, kernel_size=,strides=1, padding="same", activation = 'relu', kernel_divergence_fn=kernel_divergence_fn))
+model_vi.add(tf.keras.layers.MaxPooling1D(pool_size=2,padding='SAME'))
+model_vi.add(tf.keras.layers.Flatten())
+model_vi.add(tfp.layers.DenseFlipout(, activation = 'relu', kernel_divergence_fn=kernel_divergence_fn))
+
+
+model_vi.compile(loss='categorical_crossentropy', optimizer="adam", metrics=['accuracy'])
+model_vi.summary()
+epoch, batch_size = 
+history_vi = model_vi.fit(x_train, y_train, epochs=epoch, batch_size=batch_size, validation_data=(x_val,y_val))
+epochs_vi=range(len(history_vi.history['accuracy']))
+pred_vi=np.zeros((len(x_val),4))
+    pred_max_p_vi=np.zeros((len(x_val)))
+    pred_std_vi=np.zeros((len(x_val)))
+    entropyaleatoric_vi = np.zeros((len(x_val)))
+    entropyepistemic_vi = np.zeros((len(x_val)))
+    for i in tqdm(range(0,len(x_val))):
+
+        multi_img=np.tile(x_val[i],(5,1,1))
+        preds=model.predict(multi_img)
+        pred_vi[i]=np.mean(preds,axis=0)
+        for j in range(0,4):
+            for z in range (0,5):
+                entropyaleatoric_vi[i] = -((np.sum(preds[z][j] * np.log2(preds[z][j] + 1E-14)))/5) 
+                entropyepistemic_vi[i] = (-np.sum(pred_vi[i][j] * np.log2(pred_vi[i][j] + 1E-14)))+((np.sum(preds[z][j] * np.log2(preds[z][j] + 1E-14)))/5)
